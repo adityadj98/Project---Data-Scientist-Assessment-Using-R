@@ -1,0 +1,397 @@
+---
+title: "Project: Data Scientist Assessment Using R"
+author: "ADITYA D JATI"
+date: " AUGUST 2022"
+output: html_notebook
+
+Notes : This is R Notebook, to run the script, just click the green right error button or (ctrl + shift + enter)
+---
+
+---
+
+## 1. Dasar R
+
+#### 1.1 Membuat Data Frame
+Jika kamu memliki `data.frame` berikut :
+
+`AL. <- data.frame(a = c(11, 22, 33), b = c(44, 55, 66), c = c(77, 88, 99))`
+
+Bagaimana kamu memunculkan *output* berikut di **R** *console* ?
+```
+[1] 44 55 66
+[1] 22
+[1] 99
+```
+
+Begini :
+```{r}
+AL. <- data.frame(a = c(11, 22, 33), b = c(44, 55, 66), c = c(77, 88, 99)) #membuat variabel yang berisi dataframe
+AL.
+AL.[[2]] #akses kolom kedua
+AL.[[1]][[2]] #akses kolom pertama, baris kedua
+AL.[[3]][[3]] #akses kolom ketiga, baris ketiga
+```
+
+
+#### 1.2 Membuat Vector dan Index Position
+Silakan mengisi bagian `...` dengan *syntax* yang sesuai, sehingga diperoleh *output* yang diharapkan !
+```
+A <- c("merah", "jingga", "hitam", "hijau", "biru", "ungu")          
+L <- A...
+L
+```
+
+*output*
+```
+[1] "biru" "hitam" "merah"
+```
+
+Begini :
+```{r}
+A <- c("merah", "jingga", "hitam", "hijau", "biru", "ungu") #membuat variabel yang berisi vektor
+L <- A[c(5,3,1)] #akses indeks ke-n
+L
+```
+
+
+#### 1.3 Mengisi Syntax Factor
+Variabel `AL` adalah suatu *factor* :
+```
+AL <- ...
+AL
+```
+1. Isilah `...` dengan *syntax* yang tepat sehingga dihasilkan *output* berikut : 
+```
+[1] anggur duku apel panda sirsak mangga
+Levels: anggur apel duku mangga panda sirsak
+```
+2. Bagaimana *syntax* yang tepat untuk memodifikasi `AL`, jika *output* yang diharapkan adalah berikut ini :
+```
+[1] anggur duku apel anggur sirsak mangga
+Levels: anggur apel duku mangga panda sirsak
+```
+
+Begini :
+```{r}
+AL <- factor(c("anggur", "duku", "apel", "panda", "sirsak", "mangga")) #membuat variabel berisi factor
+AL
+AL[4] <- "anggur" #mengganti isian factor
+AL
+```
+
+
+#### 1.4 Menggunakan Function
+Jika terdapat *function* :
+```
+tambah_angka <- function(A, L) {
+    A + L
+}
+```
+dimana `A` dan `L` = `4`.
+Bagaimana kamu menggunakan *function* tersebut sehingga mendapatkan *output* berikut :
+```
+[1] 8
+```
+
+***Notes*** :
+Pada bagian *function*, dituliskan dulu (`A = ..., L = ...`)
+
+Begini :
+```{r}
+#membuat fungsi penambahan angka
+tambah_angka <- function(A, L) {
+  A + L
+}
+#menggunakan fungsi dengan isian angka 4
+tambah_angka(4, 4)
+```
+
+
+#### 1.5 Mengganti Missing Value
+Buatlah sebuah *"Fungsi R"*, dimana fungsi tersebut dapat digunakan untuk mengganti *missing value* dari suatu *vector* dengan nilai *mean* dari *vector* tersebut !
+
+*Vector* dengan *missing value (input)* :
+```
+AL <- c(1, 3, 5, 7, 9, 2, NA, 4, 6, 8, NA)
+```
+```
+AL
+```
+```
+[1] 1 3 5 7 9 2 NA 4 6 8 NA
+```
+```
+ganti.mean <- ...
+AL <- ganti.mean(AL)
+AL
+```
+*vector* sesudah *missing value* diganti dengan nilai *mean* (*output*) :
+```
+[1] 1 3 5 7 9 2 5 4 6 8 5
+```
+
+Begini :
+```{r}
+#membuat variabel dataset
+AL <- c(1, 3, 5, 7, 9, 2, NA, 4, 6, 8, NA)
+AL
+#membuat fungsi
+ganti.mean <- function(i) { #nama fungsi usahakan beda dengan variabel dataset
+  i[is.na(i)] <- mean(i, na.rm=TRUE); #cari nilai NA, jika ada ganti dengan nilai mean
+  i #simpan nilai
+}
+#menggunakan fungsi
+AL <- ganti.mean(AL)
+AL
+```
+
+---
+
+## 2. Statistik - Visualisasi dengan R
+
+#### 2.1 Masaslah 1: Langkah Awal
+Sebagai seorang *data scientist* di suatu organisasi lingkungan hidup, kamu diminta untuk melakukan analisa terhadap data hasil observasi dari beberapa pohon *cherry*. *Dataset* hasil observasi disimpan di [*link file*](https://storage.googleapis.com/dqlab-dataset/trees.csv).
+Proses analisa dilakukan dengan `R`. Adapun tahap - tahap yang perlu dilakukan adalah sebagai berikut :
+
+1. *Load library* dan *load dataset* dengan nama "Pohon_AL". Adapun *library* yang diperlukan yaitu `readr`.
+
+Begini :
+```{r}
+library(readr)
+
+Pohon_AL <- read_csv("https://storage.googleapis.com/dqlab-dataset/trees.csv", show_col_types = FALSE)
+Pohon_AL
+```
+
+
+#### 2.2 Mengecek Struktur Data
+- Menampilkan nama kolom dan tipe data setiap kolom.
+- Terdapat kesalahan penulisan untuk kolom `Girth`, seharusnya nama kolom tersebut adalah `Diameter`.
+- Satuan dari kolom `Girth/ Diameter` adalah *inch*, seharusnya adalah *ft*, sehingga perlu ditambahkan kolom (`diameter.ft`) yang berisi hasil konversi *inch - ft* (1 *inch* = 0.08333 *ft*).
+- Memunculkan beberapa baris dari *dataset*.
+- Menampilkan hasil statistik deskriptif (*min, max, - median, mean*, dan *quartil*) untuk semua kolom.
+- Mengecek *missing value*.
+
+Begini :
+```{r}
+#menampilkan nama kolom
+names(Pohon_AL)
+#menampilkan tipe data
+str(Pohon_AL)
+#mengubah nama kolom
+names(Pohon_AL)[1] <- "Diameter"
+#membuat kolom baru (diameter.ft)
+Pohon_AL$diameter.ft <- Pohon_AL$Diameter*0.08333 #konversi inch ke ft
+#menampilkan beberapa baris data
+head(Pohon_AL)
+#menampilkan hasil Statistik
+summary(Pohon_AL)
+#mengecek missing value
+is.na(Pohon_AL)
+```
+
+
+#### 2.3 Shapiro Test
+Apakah data hasil observasi ketiga variabel (**Height, Volume, diameter.ft**) terdistribusi normal ?
+
+Gunakan **Shapiro-Wilk’s** *method* untuk mengevaluasi *normality* dari setiap variabel.  
+
+Begini :
+```{r}
+#uji normalitas kolom Height
+shapiro.test(Pohon_AL$Height)
+#uji normalitas kolom Volume
+shapiro.test(Pohon_AL$Volume)
+#uji normalitas kolom diameter.ft
+shapiro.test(Pohon_AL$diameter.ft)
+```
+Jika nilai `p` `> 0.05`, maka distribusi data nya normal. Hasil uji tampak bahwa kolom `Volume` data nya belum normal.
+
+
+#### 2.4 Visualisasi Sederhana
+Buatlah visualisasi sederhana yang menjelaskan distribusi `Volume` dari *dataset* yang sudah dikerjakan sebelumnya.
+
+Untuk menyelesaikan soal ini, diminta untuk menggunakan `density plot` dari *standar R-base*.
+
+Begini:
+```{r}
+plot(density(Pohon_AL$Volume))
+```
+
+
+#### 2.5 Mencari Hubungan
+Bagaimanakah hubungan antara `Volume` batang pohon *Cherry* dengan diameter dan ketinggian (*height*) ?
+
+Gunakan pula visualisasi sederhana untuk menjelaskan hubungan tersebut.
+
+Begini :
+```{r}
+#menggunakan Regresi untuk mencari huubungan antara Volume dengan Tinggi dan Diameter(ft)
+lm(formula = Volume ~ Height + diameter.ft, data = Pohon_AL) #perhatikan posisi kolom dalam dataset di rumus Regresi nya
+#melihat hubungan antara diameter.ft terhadap volume 
+plot(Pohon_AL$diameter.ft, Pohon_AL$Volume)
+#melihat hubungan antara height terhadap volume
+plot(Pohon_AL$Height, Pohon_AL$Volume)
+```
+
+---
+
+## 3. Pernyataan Masalah
+
+#### 3.1 Analisa Efek Pemberian Obat Tidur
+Selanjutnya, kamu diminta untuk menganalisa efek pemberian obat tidur terhadap peningkatan lamanya waktu tidur dari sekelompok mahasiswa. Berikut *preview* dari observasi tersebut :
+
+| extra | group | ID  |
+| :---: | :---: | :-: |
+| 0.7   | 1     | 1   |
+| -1.6  | 1     | 2   |
+| -0.2  | 1     | 3   |
+| -1.2  | 1     | 4   |
+| -0.1  | 1     | 5   |
+| 3.4   | 1     | 6   |
+
+*extra* = peningkatan waktu tidur dalam satuan jam (*hour*) - *numeric*
+
+*group* = jenis *treatment*/dosis obat yang diberikan - *factor*
+
+*ID* = `ID` mahasiswa yang diobservasi - *factor*
+
+Jika diasumsikan data hasil observasi tersebut terdistribusi normal, lakukanlah uji hipotesis untuk mengetahui apakah terdapat perbedaan efek antara group 1 dan group 2.
+
+- H0 = Tidak ada perbedaan efek antara group 1 dan group 2
+- H1 = Terdapat perbedaan efek group 1 dan group 2
+
+Begini :
+```{r}
+#set library yang dibutuhkan
+library("readr")
+library("dplyr")
+
+#membuat variabel dataset
+Tidur_AL <- read_csv('https://storage.googleapis.com/dqlab-dataset/sleep.csv', show_col_types = FALSE) 
+Tidur_AL
+#simpan data dalam 2 data.frame/vector berbeda
+group1 <- filter(Tidur_AL, Tidur_AL$group == 1)
+group2 <- filter(Tidur_AL, Tidur_AL$group == 2)
+
+#melakukan t-test
+t_test <- t.test(group1$extra, group2$extra)
+t_test
+```
+```{r}
+#cara 2
+
+library("tidyverse")
+library(readr)
+
+Bobo_AL <- read_csv('https://storage.googleapis.com/dqlab-dataset/sleep.csv', show_col_types = FALSE)
+
+#langsung t-test tanpa membagi data
+t_test <- t.test(extra ~ group, data = Bobo_AL)
+t_test
+```
+Jika nilai `p` `> 0.05`, maka terima H0. Nilai `p = 0.08`, artinya tidak ada perbedaan efek antara grup 1 dan grup 2.
+
+
+#### 3.2 Menganalisa Grafik - Boxplot
+Menggunakan data di sebelumnya dan *library* `ggplot`, buatlah `R` *syntax* yang jika dijalankan akan menghasilkan *output* berupa *boxplot* !
+
+Begini :
+```{r}
+#set library yang digunakan
+library("ggplot2")
+
+#membuat boxplot
+ggplot(Tidur_AL, aes(x=as.character(group), y=extra, fill=as.character(group))) + geom_boxplot()
+```
+
+
+---
+
+## 4. Pembelajaran Mesin dengan R
+
+#### 4.1 Membuat Model Sederhana
+[*Dataset*](https://storage.googleapis.com/dqlab-dataset/electric_bill.csv ) menyajikan informasi terkait biaya listrik rumah tangga di suatu negara.
+
+Dari data tersebut kamu ingin mengetahui faktor - faktor yang memengaruhi total biaya listrik di setiap rumah tangga.
+
+Buatlah model sederhana yang dapat menjelaskan bagaimana pengaruh `num_people` dan `housearea` terhadap `amount_paid` !
+
+Begini :
+```{r}
+#set library yang dibutuhkan
+library(readr)
+
+#membuat variabel dataset
+tagihan.listrik <- read_csv("https://storage.googleapis.com/dqlab-dataset/electric_bill.csv", show_col_types = FALSE)
+head(tagihan.listrik, 9)
+#membuat Regresi untuk mencari hubungan
+lm(amount_paid ~  num_people + housearea, data=tagihan.listrik)
+```
+
+
+#### 4.2 Training dan Testing
+Dalam membuat model *machine learning*, *dataset* perlu dibagi ke dalam *Training* dan *Testing set*. Salah satu *library* yang digunakan adalah `caret`.
+
+Dengan menggunakan **Iris** [*dataset*](https://storage.googleapis.com/dqlab-dataset/iris.csv) dan *library* `caret`, buatlah *syntax* untuk membagi *dataset* tersebut ke dalam *training set* (`80%`) dan *testing set* (`20%`) !
+
+Begini :
+```{r}
+#set library yang dibutuhkan
+library(readr)
+library(caret)
+
+set.seed(123)
+
+iris.AL <- read_csv("https://storage.googleapis.com/dqlab-dataset/iris.csv", show_col_types = FALSE)
+head(iris.AL, 9)
+#membagi dataset
+trainIndex <- createDataPartition(iris.AL$Species, p=0.8, list=FALSE)
+training <- iris.AL[trainIndex, ]
+testing <- iris.AL[-trainIndex, ]
+
+dim(training)
+dim(testing)
+
+tail(training, 30)
+testing
+```
+
+
+#### 4.3 Model Decision Tree
+[*Dataset*](https://storage.googleapis.com/dqlab-dataset/suv_data.csv) menyajikan informasi terkait profil *customer* yang pernah membeli mobil keluaran terbaru.
+
+*Dataset* ini perlu dibagi ke dalam *training set* dan *testing set*, dan buatlah *machine learning model* dengan menggunakan **Decision Tree** untuk memprediksi *customer* yang tertarik membeli mobil keluaran terbaru, serta evaluasi *performance* dari kedua model tersebut.
+
+Begini :
+```{r}
+#set library yang dibutuhkan
+library(caret) 
+library(rpart)
+library(readr)
+
+set.seed(123) #membuat pengacakan konsisten
+
+#membuat variabel dataset
+beli.AL <- read_csv("https://storage.googleapis.com/dqlab-dataset/suv_data.csv", show_col_types = FALSE)
+head(beli.AL, 9)
+#membagi data ke training dan testing
+trainIndex <- createDataPartition(beli.AL$Purchased, p=0.8, list=FALSE)
+training <- beli.AL[trainIndex, ]
+testing <- beli.AL[-trainIndex, ]
+
+#membuat model dengan decision tree
+pohon_kep <- rpart(Purchased ~ ., data = training, method="class")
+prediksi <- predict(pohon_kep, newdata = testing, type = "class")
+
+#evaluasi performance dengan data testing
+testing.beli <- factor(testing$Purchased)
+
+#menampilkan hasil evaluasi model 
+hasil.eval <- confusionMatrix(prediksi,testing.beli)
+hasil.eval
+```
+
+---
+
+
